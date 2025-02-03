@@ -1,12 +1,6 @@
 const path = require('path'); // Ensure path module is required
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
-console.log("CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME);
-console.log("CLOUDINARY_API_KEY:", process.env.CLOUDINARY_API_KEY);
-console.log("CLOUDINARY_API_SECRET:", process.env.CLOUDINARY_API_SECRET ? "Loaded" : "Missing");
-console.log("MONGO_URI:", process.env.MONGO_URI);
-console.log("PORT:", process.env.PORT);
-
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
