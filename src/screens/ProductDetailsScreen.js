@@ -32,12 +32,13 @@ const ProductDetailsScreen = ({ route, navigation }) => {
       if (response.status === 200) {
         const cartItems = response.data.items;
         const existingItem = cartItems.find(item => item.productId._id === product._id);
-        if (existingItem) {
-          setCartQuantity(existingItem.quantity);
-        }
+        setCartQuantity(existingItem ? existingItem.quantity : 0);  // Ensures default state
+      } else {
+        setCartQuantity(0);  // Ensures "Add to Cart" button is shown instead of error
       }
     } catch (error) {
       console.error('Error fetching cart:', error);
+      setCartQuantity(0);  // Set default state to avoid displaying an error
     }
   };
 
@@ -211,7 +212,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             <Icon name="store" size={20} color="#6C63FF" />
             <View style={styles.infoText}>
               <Text style={styles.infoLabel}>Sold by</Text>
-              <Text style={styles.sellerName}>{seller.name}</Text>
+              <Text style={styles.sellerName}>{seller.companyName}</Text>
             </View>
           </View>
 

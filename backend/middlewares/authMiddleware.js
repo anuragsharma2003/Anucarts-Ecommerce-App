@@ -14,8 +14,6 @@ const verifyToken = (req, res, next) => {
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 
-    console.log(decoded);  // Log the decoded token to check what it contains
-
     // Attach userId and sellerId to the request object if available
     if (decoded.userId) {
       req.userId = decoded.userId; // For user-related routes

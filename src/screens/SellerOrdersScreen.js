@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import axios from 'axios';
 import { DEV_API_URL, PROD_API_URL } from '@env';
@@ -18,12 +18,20 @@ const SellerOrdersScreen = ({ route }) => {
       const response = await axios.get(`${BASE_URL}/orders/seller/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const sortedOrders = response.data.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-      setOrders(sortedOrders);
+
+      if (response.status === 200 && Array.isArray(response.data)) {
+        setOrders(response.data.length > 0 ? response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : []);
+      } else {
+        console.warn('Unexpected response:', response.data);
+        setOrders([]);
+      }
     } catch (error) {
-      Alert.alert('Error', 'Failed to fetch orders.');
+      if (error.response && error.response.status === 404) {
+        console.warn('No seller orders found:', error.response.data);
+        setOrders([]); // No error alert, just set empty orders
+      } else {
+        console.error('Error fetching seller orders:', error);
+      }
     }
   };
 
@@ -43,7 +51,8 @@ const SellerOrdersScreen = ({ route }) => {
         )
       );
     } catch (error) {
-      Alert.alert('Error', 'Failed to update order status.');
+      console.error('Error updating order status:', error);
+      // Removed Alert as per request
     }
   };
 

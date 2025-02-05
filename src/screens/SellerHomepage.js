@@ -31,13 +31,21 @@ const SellerHomepage = ({ route, navigation }) => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const sortedProducts = productsResponse.data.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setProducts(sortedProducts);
+        if (productsResponse.status === 200 && Array.isArray(productsResponse.data)) {
+          const sortedProducts = productsResponse.data.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          setProducts(sortedProducts);
+        } else {
+          setProducts([]); // Ensures products is an empty array if no products exist
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
-        Alert.alert('Error', 'Failed to fetch data.');
+
+        // Handle 404 error specifically
+        if (error.response && error.response.status === 404) {
+          setProducts([]); // No products found, set an empty array
+        }
       }
     };
 

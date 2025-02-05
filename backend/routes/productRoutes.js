@@ -16,13 +16,23 @@ cloudinary.config({
 });
 
 // 🔹 Multer storage using Cloudinary
+//const storage = new CloudinaryStorage({
+//  cloudinary,
+//  params: {
+//    folder: 'anucarts_products', // Cloudinary folder
+//    allowed_formats: ['jpg', 'jpeg', 'png'],
+//  },
+//});
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: 'anucarts_products', // Cloudinary folder
-    allowed_formats: ['jpg', 'jpeg', 'png'],
-  },
+  params: async (req, file) => ({
+    folder: 'anucarts_products',
+    format: file.mimetype.split('/')[1], // Automatically detects file format
+    public_id: `${Date.now()}-${file.originalname}`, // Ensures unique filenames
+  }),
 });
+
+
 
 const upload = multer({ storage });
 
@@ -64,8 +74,7 @@ router.post('/add', verifyToken, upload.single('image'), async (req, res) => {
 // 🔹 Get all products
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find().populate('seller', 'name email');
-
+    const products = await Product.find().populate('seller', 'companyName');
     if (products.length === 0) {
       return res.status(404).json({ message: 'No products available' });
     }

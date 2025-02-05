@@ -85,7 +85,7 @@ const UserHomepage = ({ route, navigation }) => {
         <Text style={styles.productPrice}>₹{item.price}</Text>
         <View style={styles.sellerContainer}>
           <Icon name="store" size={14} color="#6C63FF" />
-          <Text style={styles.sellerName}>{item.seller?.name || 'Unknown Seller'}</Text>
+          <Text style={styles.sellerName}>{item.seller?.companyName || 'Unknown Seller'}</Text>
         </View>
         <View style={styles.dateContainer}>
           <Icon name="calendar" size={14} color="#666" />

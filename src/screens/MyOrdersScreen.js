@@ -10,7 +10,6 @@ const MyOrdersScreen = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
   const BASE_URL = __DEV__ ? DEV_API_URL : PROD_API_URL;
 
-  // Keep original logic unchanged
   const fetchOrders = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
@@ -23,15 +22,21 @@ const MyOrdersScreen = ({ navigation }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.data && Array.isArray(response.data)) {
-        const sortedOrders = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setOrders(sortedOrders);
+      if (response.status === 200 && Array.isArray(response.data)) {
+        setOrders(response.data.length > 0 ? response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : []);
       } else {
-        Alert.alert('Error', 'Failed to fetch orders');
+        console.warn('Unexpected response:', response.data);
+        setOrders([]);
       }
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      Alert.alert('Error', 'An error occurred while fetching orders');
+      if (error.response && error.response.status === 404) {
+        // Backend returns 404 when no orders exist, so treat it normally
+        console.warn('No orders found:', error.response.data);
+        setOrders([]); // No error alert, just set empty orders
+      } else {
+        console.error('Error fetching orders:', error);
+        Alert.alert('Error', 'An error occurred while fetching orders');
+      }
     }
   };
 
