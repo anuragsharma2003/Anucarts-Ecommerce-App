@@ -59,6 +59,4 @@ app.use((err, req, res, next) => {
 
 // Start the server
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Backend server running on http://0.0.0.0:${port}`);
-  console.log(`Expose your local server using ngrok for public access`);
 });
