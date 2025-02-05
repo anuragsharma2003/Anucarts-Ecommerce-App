@@ -15,14 +15,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// 🔹 Multer storage using Cloudinary
-//const storage = new CloudinaryStorage({
-//  cloudinary,
-//  params: {
-//    folder: 'anucarts_products', // Cloudinary folder
-//    allowed_formats: ['jpg', 'jpeg', 'png'],
-//  },
-//});
 const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => ({
